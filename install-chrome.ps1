@@ -12,9 +12,9 @@ Start-Process -FilePath $chromeInstallerPath -ArgumentList "/silent /install" -W
 Remove-Item $chromeInstallerPath
 
 # Optional: Verify installation
-$chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
-if (Test-Path $chromePath) {
-    Write-Output "Chrome installed successfully at $chromePath"
-} else {
-    Write-Output "Chrome installation failed."
-}
+# $chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+# if (Test-Path $chromePath) {
+#   Write-Output "Chrome installed successfully at $chromePath"
+# } else {
+#    Write-Output "Chrome installation failed."
+# }
