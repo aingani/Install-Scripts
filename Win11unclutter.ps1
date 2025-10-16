@@ -1,14 +1,16 @@
 <# *************************************************
-   Windows 11 Unclutter
+   Windows 11 Unclutter 
+      - Github Version
 
    Quantech Corp.
    Alfred Ingani
-   Ver 1.0.0
+   Ver 1.1.0
+      - Do Not Check for Reg Keys
    08/26/2025
    *************************************************
 #>
 
-$QCKey = "HKLM:\Software\QuantechCorp\Win11Clutter"
+<# $QCKey = "HKLM:\Software\QuantechCorp\Win11Clutter"
 $ver = "Version"
 $PWCFGValue = "1.0.0"
 
@@ -19,6 +21,8 @@ If (Test-Path $QCKey)
 else 
 {
     Write-Output "Win11Clutter Key Not Here"
+#>
+
 # Remove new Outlook
 Get-AppxPackage -Name "Microsoft.OutlookForWindows" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue 
 Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.OutlookForWindows"} | Remove-AppxProvisionedPackage -Online
@@ -46,7 +50,9 @@ Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft
 Get-AppxPackage -Name "Microsoft.XboxGameCallableUI" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue 
 Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.XboxGameCallableUI"} | Remove-AppxProvisionedPackage -Online
 
-    New-Item -Path $QCKey -Force
+<#    New-Item -Path $QCKey -Force
     New-ItemProperty -Path $QCKey -Name $Ver -Value $PWCFGValue -PropertyType STRING -Force 
 }
+#>
      
+
