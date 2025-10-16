@@ -6,7 +6,7 @@
    Alfred Ingani
    Ver 1.1.0
       - Do Not Check for Reg Keys
-   08/26/2025
+   10/16/2025
    *************************************************
 #>
 
@@ -55,4 +55,5 @@ Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft
 }
 #>
      
+
 
