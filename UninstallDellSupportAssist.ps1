@@ -2,7 +2,7 @@
 $appsToRemove = @(
     "Dell SupportAssist",
     "Dell SupportAssist OS Recovery Plugin for Dell Update",
-    "Dell SupportAssist Remediation"
+    "Dell SupportAssist Remediation",
     "Dell Optimizer"
 )
 
@@ -45,4 +45,5 @@ foreach ($app in $appsToRemove) {
     if (-not $found) {
         Write-Host "$app not found in registry. It may not be installed via MSI."
     }
+
 }
