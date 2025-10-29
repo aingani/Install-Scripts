@@ -5,4 +5,4 @@ Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ain
 Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11unclutter.ps1").Content
 
 ## Un-Install Support Assist
-Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/UninstallDellSupportAssist.ps1").Content
+Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/UninstallDellSupportAssist.ps1").Content
