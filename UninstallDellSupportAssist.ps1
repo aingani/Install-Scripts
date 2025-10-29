@@ -3,6 +3,7 @@ $appsToRemove = @(
     "Dell SupportAssist",
     "Dell SupportAssist OS Recovery Plugin for Dell Update",
     "Dell SupportAssist Remediation"
+    "Dell Optimizer"
 )
 
 # Registry paths to check
@@ -32,7 +33,7 @@ foreach ($app in $appsToRemove) {
         if ($found) { break }
     }
 
-    # Appx fallback cleanup (for Dell SupportAssist only)
+    # Appx fallback cleanup
     if ($app -eq "Dell SupportAssist") {
         $appxMatch = Get-AppxPackage -AllUsers | Where-Object { $_.Name -like "*SupportAssist*" }
         foreach ($pkg in $appxMatch) {
