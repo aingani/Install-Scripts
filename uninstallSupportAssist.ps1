@@ -15,3 +15,11 @@ if ($supportassist2)
     echo "msiexec.exe " $arguments2
     (Start-Process "msiexec.exe" -ArgumentList $arguments2 -NoNewWindow -Wait -PassThru).ExitCode
 }
+$supportassist3 = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall| Get-ItemProperty | Where-Object {$_.DisplayName -ceq "Dell SupportAssist Remediation" } | Select-Object -ExpandProperty UninstallString
+if ($supportassist3)
+{
+    $arguments3 = $supportassist2.substring(12) + " /qn"
+    echo "Uninstalling Dell SupportAssist Remediation"
+    echo "msiexec.exe " $arguments2
+    (Start-Process "msiexec.exe" -ArgumentList $arguments2 -NoNewWindow -Wait -PassThru).ExitCode
+}
