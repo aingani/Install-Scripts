@@ -1,59 +1,56 @@
 <# *************************************************
-   Windows 11 Unclutter 
-      - Github Version
+   Windows 11 Unclutter
 
    Quantech Corp.
    Alfred Ingani
-   Ver 1.1.0
-      - Do Not Check for Reg Keys
-   10/16/2025
-   *************************************************
-#>
+   Ver 1.5.0
+    - Added as listed apps
+    - added check version #
+   10/29/2025
+   ************************************************* #>
 
-<# $QCKey = "HKLM:\Software\QuantechCorp\Win11Clutter"
+$QCKey = "HKLM:\Software\QuantechCorp\Win11Clutter"
 $ver = "Version"
-$PWCFGValue = "1.0.0"
+$currentVersion = "1.5.0"
 
-If (Test-Path $QCKey)
-{
-    Write-Output "Win11Clutter Key Here"
+# List of app package names to remove
+$appPackages = @(
+    "Microsoft.OutlookForWindows",
+    "MicrosoftTeams",
+    "Microsoft.MicrosoftOfficeHub",
+    "Microsoft.M365Companions",
+    "Microsoft.YourPhone",
+    "Microsoft.XboxSpeechToTextOverlay",
+    "Microsoft.XboxIdentityProvider",
+    "Microsoft.Xbox.TCUI",
+    "Microsoft.XboxGamingOverlay",
+    "Microsoft.XboxGameCallableUI"
+)
+
+If (Test-Path $QCKey) {
+    $existingVersion = Get-ItemPropertyValue -Path $QCKey -Name $ver -ErrorAction SilentlyContinue
+    if ($existingVersion -ne $currentVersion) {
+        Write-Output "Version mismatch detected. Updating to $currentVersion..."
+
+        foreach ($app in $appPackages) {
+            Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
+            Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -eq $app } | Remove-AppxProvisionedPackage -Online
+        }
+
+        Set-ItemProperty -Path $QCKey -Name $ver -Value $currentVersion -Force
+        Write-Output "Version updated to $currentVersion."
+    } else {
+        Write-Output "Version is already $currentVersion. No action needed."
+    }
+} else {
+    Write-Output "Win11Clutter Key Not Here. Proceeding with cleanup..."
+
+    foreach ($app in $appPackages) {
+        Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
+        Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -eq $app } | Remove-AppxProvisionedPackage -Online
+    }
+
+    New-Item -Path $QCKey -Force
+    New-ItemProperty -Path $QCKey -Name $ver -Value $currentVersion -PropertyType STRING -Force 
+    Write-Output "Registry key created and version set to $currentVersion."
 }
-else 
-{
-    Write-Output "Win11Clutter Key Not Here"
-#>
-
-# Remove new Outlook
-Get-AppxPackage -Name "Microsoft.OutlookForWindows" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue 
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.OutlookForWindows"} | Remove-AppxProvisionedPackage -Online
-# remove personal Teams
-Get-AppxPackage -Name "MicrosoftTeams" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "MicrosoftTeams"} | Remove-AppxProvisionedPackage -Online
-# Remove Office Hub
-Get-AppxPackage -Name "Microsoft.MicrosoftOfficeHub" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue 
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.MicrosoftOfficeHub"} | Remove-AppxProvisionedPackage -Online
-# remove M365 Companions
-Get-AppxPackage -Name "Microsoft.M365Companions" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.M365Companions"} | Remove-AppxProvisionedPackage -Online
-# remove Phone Link app
-Get-AppxPackage -Name "Microsoft.YourPhone" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue 
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.YourPhone"} | Remove-AppxProvisionedPackage -Online
-# Remove XBox apps
-Get-AppxPackage -Name "Microsoft.XboxSpeechToTextOverlay" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.XboxSpeechToTextOverlay"} | Remove-AppxProvisionedPackage -Online
-Get-AppxPackage -Name "Microsoft.XboxIdentityProvider" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.XboxIdentityProvider"} | Remove-AppxProvisionedPackage -Online
-Get-AppxPackage -Name "Microsoft.Xbox.TCUI" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.Xbox.TCUI"} | Remove-AppxProvisionedPackage -Online
-Get-AppxPackage -Name "Microsoft.XboxGamingOverlay" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue 
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.XboxGamingOverlay"} | Remove-AppxProvisionedPackage -Online
-Get-AppxPackage -Name "Microsoft.XboxGameCallableUI" -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Continue 
-Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.XboxGameCallableUI"} | Remove-AppxProvisionedPackage -Online
-
-<#    New-Item -Path $QCKey -Force
-    New-ItemProperty -Path $QCKey -Name $Ver -Value $PWCFGValue -PropertyType STRING -Force 
-}
-#>
-     
-
-
