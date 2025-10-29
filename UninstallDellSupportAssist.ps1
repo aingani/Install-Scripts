@@ -3,7 +3,8 @@ $appsToRemove = @(
     "Dell SupportAssist",
     "Dell SupportAssist OS Recovery Plugin for Dell Update",
     "Dell SupportAssist Remediation",
-    "Dell Optimizer"
+    "Dell Optimizer",
+    "DellOptimizerUI"
 )
 
 # Registry paths to check
@@ -47,3 +48,4 @@ foreach ($app in $appsToRemove) {
     }
 
 }
+
