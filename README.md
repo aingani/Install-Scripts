@@ -11,3 +11,5 @@
 ## Run Info Gathering from PowerShell (as Admin)
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/InfoGathering.ps1").Content`
 
+
+
