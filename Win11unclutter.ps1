@@ -3,15 +3,15 @@
 
    Quantech Corp.
    Alfred Ingani
-   Ver 1.5.0
+   Ver 1.5.1
     - Added as listed apps
-    - added check version #
-   10/29/2025
+    - added check script version #
+   11/03/2025
    ************************************************* #>
 
 $QCKey = "HKLM:\Software\QuantechCorp\Win11Clutter"
 $ver = "Version"
-$currentVersion = "1.5.0"
+$currentVersion = "1.5.1"
 
 # List of app package names to remove
 $appPackages = @(
@@ -30,7 +30,8 @@ $appPackages = @(
 If (Test-Path $QCKey) {
     $existingVersion = Get-ItemPropertyValue -Path $QCKey -Name $ver -ErrorAction SilentlyContinue
     if ($existingVersion -ne $currentVersion) {
-        Write-Output "Version mismatch detected. Updating to $currentVersion..."
+        Write-Host
+        Write-Host "Checking Version. Updating to $currentVersion..." -ForegroundColor Green 
 
         foreach ($app in $appPackages) {
             Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
@@ -38,12 +39,15 @@ If (Test-Path $QCKey) {
         }
 
         Set-ItemProperty -Path $QCKey -Name $ver -Value $currentVersion -Force
-        Write-Output "Version updated to $currentVersion."
+        Write-Host
+        Write-Host "Version updated to $currentVersion." -ForegroundColor Green
     } else {
-        Write-Output "Version is already $currentVersion. No action needed."
+        Write-Host
+        Write-Host "Version is already $currentVersion. No action needed." -ForegroundColor Green
     }
 } else {
-    Write-Output "Win11Clutter Key Not Here. Proceeding with cleanup..."
+    Write-Host
+    Write-Host "Win11Clutter Key Not Here. Proceeding with cleanup..." -ForegroundColor Green
 
     foreach ($app in $appPackages) {
         Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
@@ -51,6 +55,7 @@ If (Test-Path $QCKey) {
     }
 
     New-Item -Path $QCKey -Force
-    New-ItemProperty -Path $QCKey -Name $ver -Value $currentVersion -PropertyType STRING -Force 
-    Write-Output "Registry key created and version set to $currentVersion."
+    New-ItemProperty -Path $QCKey -Name $ver -Value $currentVersion -PropertyType STRING -Force
+    Write-Host
+    Write-Host "Registry key created and version set to $currentVersion." -ForegroundColor Green
 }
