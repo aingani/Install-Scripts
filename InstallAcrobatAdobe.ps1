@@ -9,7 +9,7 @@
    *************************************************
 #>
 
-
+Clear-Host
 # Download Variables
 $downloadUrl = 'https://trials.adobe.com/AdobeProducts/APRO/Acrobat_HelpX/win32/Acrobat_DC_Web_x64_WWMUI.zip'
 $zipPath = "$env:TEMP\Acrobat_DC_Web_WWMUI.zip"
@@ -23,7 +23,6 @@ try {
     Write-Host "*******************************************" -ForegroundColor Green
     Write-Host "Downloading Adobe Acrobat Unified installer" -ForegroundColor Green
     Write-Host "Please Wait..." -ForegroundColor Green
-    Write-Host
     $wc = New-Object System.Net.WebClient
     $wc.DownloadFile($downloadUrl, $zipPath)
     Write-Host "Download completed successfully." -ForegroundColor Green
@@ -44,11 +43,9 @@ if (Test-Path $zipPath) {
 
     # Extract the ZIP file
     try {
-        Write-Host "*******************************************" -ForegroundColor Green
         Write-Host "Extracting installer files" -ForegroundColor Green
         Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
         # Write-Host "Extraction completed."
-        Write-Host "*******************************************" -ForegroundColor Green
         Write-Host
     }
     catch {
@@ -61,7 +58,6 @@ if (Test-Path $zipPath) {
 
     if (Test-Path $installerExe) {
         try {
-            Write-Host "*******************************************" -ForegroundColor Green
             Write-Host "Starting Silent installation Please Wait..." -ForegroundColor Green
             Start-Process -FilePath $installerExe -ArgumentList "/sAll /rs /rps /msi EULA_ACCEPT=YES" -Wait
             Write-Host 
@@ -77,7 +73,7 @@ if (Test-Path $zipPath) {
             reg.exe add "$featureLockDownKey" /v "$featureLockDownStringValue" /t REG_DWORD /d $featureLockDownDwordValue /f /reg:64
             reg.exe add "$cIPMKey" /v "$cIPMStringValue" /t REG_DWORD /d $cIPMDwordValue /f /reg:64
             Write-Host "Acrobat Install completed successfully." -ForegroundColor Green
-            Write-Host "*******************************************" -ForegroundColor Green
+            Write-Host
         }
         catch {
             Write-Host "Installation failed: $($_.Exception.Message)" -ForegroundColor Red
@@ -91,11 +87,10 @@ if (Test-Path $zipPath) {
     # Cleanup: Delete ZIP and extracted folder
     Write-Host "*******************************************" -ForegroundColor Green
     Write-Host "Removing Downloaded & Unzipped Files" -ForegroundColor Gree
-    Write-Host
     try {
         Remove-Item -Path $zipPath -Force
         Remove-Item -Path $extractPath -Recurse -Force
-        # Write-Host "Removal Completed"
+        Write-Host "Removal Completed" -ForegroundColor Green
         Write-Host "*******************************************" -ForegroundColor Green
     }
     catch {
