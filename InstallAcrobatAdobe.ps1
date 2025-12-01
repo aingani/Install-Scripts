@@ -22,12 +22,12 @@ try {
     # Download the installer ZIP using WebClient
     Write-Host "*******************************************" -ForegroundColor Green
     Write-Host "Downloading Adobe Acrobat Unified installer" -ForegroundColor Green
-    Write-Host "Please Wait a few" -ForegroundColor Green
-    Write-Host "*******************************************" -ForegroundColor Green
+    Write-Host "Please Wait..." -ForegroundColor Green
+    Write-Host
     $wc = New-Object System.Net.WebClient
     $wc.DownloadFile($downloadUrl, $zipPath)
     Write-Host "Download completed successfully." -ForegroundColor Green
-    Write-Host "*******************************************" -ForegroundColor Green
+    Write-Host
 }
 catch {
     Write-Host "Download failed: $($_.Exception.Message)" -ForegroundColor Red
@@ -47,7 +47,7 @@ if (Test-Path $zipPath) {
         Write-Host "*******************************************" -ForegroundColor Green
         Write-Host "Extracting installer files" -ForegroundColor Green
         Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
-        Write-Host "Extraction completed."
+        # Write-Host "Extraction completed."
         Write-Host "*******************************************" -ForegroundColor Green
         Write-Host
     }
@@ -64,7 +64,7 @@ if (Test-Path $zipPath) {
             Write-Host "*******************************************" -ForegroundColor Green
             Write-Host "Starting Silent installation Please Wait..." -ForegroundColor Green
             Start-Process -FilePath $installerExe -ArgumentList "/sAll /rs /rps /msi EULA_ACCEPT=YES" -Wait
-            Write-Host "*******************************************" -ForegroundColor Green
+            Write-Host 
             Write-Host "Creating No Logon Registry Keys" -ForegroundColor Green
             $featureLockDownKey = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown"
             $cIPMKey = "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cIPM"
@@ -80,7 +80,7 @@ if (Test-Path $zipPath) {
             Write-Host "*******************************************" -ForegroundColor Green
         }
         catch {
-            Write-Host "Installation failed: $($_.Exception.Message)"
+            Write-Host "Installation failed: $($_.Exception.Message)" -ForegroundColor Red
             exit 1
         }
     } else {
@@ -89,14 +89,17 @@ if (Test-Path $zipPath) {
     }
 
     # Cleanup: Delete ZIP and extracted folder
-    # Write-Host "Cleaning up temporary files..."
+    Write-Host "*******************************************" -ForegroundColor Green
+    Write-Host "Removing Downloaded & Unzipped Files" -ForegroundColor Gree
+    Write-Host
     try {
         Remove-Item -Path $zipPath -Force
         Remove-Item -Path $extractPath -Recurse -Force
-        # Write-Host "Cleanup completed."
+        # Write-Host "Removal Completed"
+        Write-Host "*******************************************" -ForegroundColor Green
     }
     catch {
-        Write-Host "Cleanup failed: $($_.Exception.Message)"
+        Write-Host "Cleanup failed: $($_.Exception.Message)" -ForegroundColor Red
     }
 } else {
     Write-Host "ZIP file not found after download."
