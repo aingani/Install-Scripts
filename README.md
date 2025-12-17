@@ -12,6 +12,8 @@
 ## Run Configure Network Settings from PowerShell (as Admin)
 **Sets NETBios & IPv6 to Disabled.**  
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/ConfigNetworkSettings.ps1").Content`
+## Run PowerSettings (as Admin)
+`Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/PowerSettings.ps1").Content`
 
 
 
