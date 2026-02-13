@@ -15,10 +15,11 @@
 
 $QCKey = "HKLM:\Software\QuantechCorp\Win11Clutter"
 $ver = "Version"
-$currentVersion = "1.6.0"
+$currentVersion = "1.6.1"
 
 # List of app package names to remove
 $appPackages = @(
+    "Microsoft.GamingOverlay",
     "Microsoft.OutlookForWindows",
     "MicrosoftTeams",
     "Microsoft.MicrosoftOfficeHub",
