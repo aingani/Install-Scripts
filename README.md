@@ -16,3 +16,4 @@
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/PowerSettings.ps1").Content`
 ## Run DisableHello (as Admin)
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/disablehello.ps1").Content`
+
