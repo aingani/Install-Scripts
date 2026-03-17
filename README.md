@@ -1,5 +1,5 @@
 ## Install Chrome from Powershell (as Admin)
-`Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/install-chrome.ps1").Content`
+`Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/install-chrome.ps1").Content`
 ## Install Adobe Acrobat Unified from Powershell (as Admin)
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallAcrobatAdobe.ps1").Content`
 ## Install Win11Unclutter from PowerShell (as Admin)
