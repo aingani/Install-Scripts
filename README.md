@@ -1,3 +1,5 @@
+## Run The Install Scripts Menu(as Admin)
+`Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallScriptsGitHub.ps1").Content`
 ## Install Chrome from Powershell (as Admin)
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/install-chrome.ps1").Content`
 ## Install Adobe Acrobat Unified from Powershell (as Admin)
