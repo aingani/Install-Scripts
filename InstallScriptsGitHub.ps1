@@ -48,7 +48,7 @@ $scripts = @(
     @{
         Name = "Install Adobe Acrobat (Unified)"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallAcrobatAdobeNew.ps1"
-        Note = ""
+        Note = "New"
     },
     @{
         Name = "Remove Windows 11 Bloatware (Win11Unclutter)"
