@@ -67,7 +67,7 @@ $scripts = @(
     },
         @{
         Name = "Run Win11Performance"
-        Url  = `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11Performance.ps1").Content`
+        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11Performance.ps1"
         Note = "Disables telemetry services & tasks, consumer features, Widgets, LLMNR, aSMBv1,Enables Storage Sense,sets visual effects"
     },
     @{
