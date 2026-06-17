@@ -11,6 +11,9 @@
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/UninstallDellSupportAssist.ps1").Content`
 ## Run Info Gathering from PowerShell (as Admin)
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/InfoGathering.ps1").Content`
+## Run Win11Performance (as Admin)
+**Disables telemetry services & tasks, consumer features, Widgets, LLMNR, and SMBv1. Enables Storage Sense and sets visual effects to Best Performance (ClearType preserved).**  
+`Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11Performance.ps1").Content`
 ## Run Configure Network Settings from PowerShell (as Admin)
 **Sets NETBios & IPv6 to Disabled.**  
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/ConfigNetworkSettings.ps1").Content`
@@ -18,4 +21,3 @@
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/PowerSettings.ps1").Content`
 ## Run DisableHello (as Admin)
 `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/disablehello.ps1").Content`
-
