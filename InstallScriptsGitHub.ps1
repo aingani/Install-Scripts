@@ -65,6 +65,11 @@ $scripts = @(
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InfoGathering.ps1"
         Note = ""
     },
+        @{
+        Name = "Run Win11Performance"
+        Url  = `Invoke-Expression (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11Performance.ps1").Content`
+        Note = "Disables telemetry services & tasks, consumer features, Widgets, LLMNR, aSMBv1,Enables Storage Sense,sets visual effects"
+    },
     @{
         Name = "Configure Network Settings (disable NetBIOS & IPv6)"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/ConfigNetworkSettings.ps1"
