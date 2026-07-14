@@ -182,7 +182,7 @@ function Get-StatusColor {
         'NotInstalled'    { 'Yellow' }
         'UpdateAvailable' { 'Green' }
         'Current'         { 'DarkGray' }
-        default           { 'Gray' }
+        default           { 'White' }
     }
 }
 
