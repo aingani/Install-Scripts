@@ -1,57 +1,74 @@
 # Install-HEVC.ps1
+# Downloads and installs the latest HEVC codec release asset from GitHub
+# Exits if an HEVC codec is already installed
 
 $Owner = "aingani"
 $Repo  = "Install-Scripts"
 
-Write-Host "Checking for HEVC Extension..."
+Write-Host ""
+Write-Host "Checking for existing HEVC codec installation..." -ForegroundColor Cyan
 
-$Installed = Get-AppxPackage -Name Microsoft.HEVCVideoExtension -ErrorAction SilentlyContinue
+# Detect any installed HEVC codec package
+$Installed = Get-AppxPackage *HEVC* -ErrorAction SilentlyContinue
 
 if ($Installed) {
     Write-Host ""
-    Write-Host "HEVC Video Extension is already installed."
-    Write-Host "Version: $($Installed.Version)"
-    return
-}
+    Write-Host "An HEVC codec is already installed:" -ForegroundColor Green
 
-Write-Host "HEVC Extension not found. Downloading latest release..."
+    $Installed | ForEach-Object {
+        Write-Host "$($_.Name) - Version $($_.Version)"
+    }
+
+    exit 0
+}
 
 try {
 
-    # Get latest GitHub release
+    Write-Host ""
+    Write-Host "Retrieving latest GitHub release..." -ForegroundColor Cyan
+
     $Release = Invoke-RestMethod `
         -Uri "https://api.github.com/repos/$Owner/$Repo/releases/latest"
 
-    # Find APPX asset
+    # Locate HEVC APPX asset
     $Asset = $Release.assets | Where-Object {
-        $_.name -like "*.appx"
+        $_.name -like "Microsoft.HEVCVideoExtension*.appx"
     } | Select-Object -First 1
 
     if (-not $Asset) {
-        throw "No APPX asset found in the latest release."
+        throw "Microsoft HEVC APPX asset was not found in the latest GitHub release."
     }
 
     $DownloadPath = Join-Path $env:TEMP $Asset.name
 
-    Write-Host "Downloading $($Asset.name)..."
+    Write-Host ""
+    Write-Host "Downloading $($Asset.name)..." -ForegroundColor Yellow
 
     Invoke-WebRequest `
         -Uri $Asset.browser_download_url `
-        -OutFile $DownloadPath
+        -OutFile $DownloadPath `
+        -UseBasicParsing
 
-    Write-Host "Installing..."
+    Write-Host ""
+    Write-Host "Installing HEVC codec..." -ForegroundColor Yellow
 
     Add-AppxPackage `
         -Path $DownloadPath `
         -ErrorAction Stop
 
     Write-Host ""
-    Write-Host "Installation completed successfully."
+    Write-Host "Installation completed successfully." -ForegroundColor Green
 
 }
 catch {
+
     Write-Host ""
-    Write-Host "Installation failed!"
-    Write-Host $_.Exception.Message
+    Write-Host "Installation failed." -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
+
+    Write-Host ""
+    Write-Host "If troubleshooting is required, run:" -ForegroundColor Yellow
+    Write-Host "Get-AppPackageLog -ActivityID <ActivityID shown in the error>" -ForegroundColor Yellow
+
     exit 1
 }
