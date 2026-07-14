@@ -87,6 +87,9 @@ $EmbeddedJson = @'
                 { "PackageIdentifier" : "Balena.Etcher" },
                 { "PackageIdentifier" : "WinSCP.WinSCP" },
                 { "PackageIdentifier" : "Microsoft.WindowsApp" },
+                { "PackageIdentifier" : "Notepad++.Notepad++" },
+                { "PackageIdentifier" : "JAMSoftware.TreeSize.Free" }, 
+                { "PackageIdentifier" : "Rufus.Rufus" },
                 { "PackageIdentifier" : "Microsoft.WSL" }
             ],
             "SourceDetails" :
