@@ -56,6 +56,11 @@ $scripts = @(
         Note = ""
     },
     @{
+        Name = "Install HEIC Extension"
+        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallHEICExtension.ps1"
+        Note = ""
+    },
+    @{
         Name = "Run Remove Windows 11 Bloatware (Win11Unclutter)"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11unclutter.ps1"
         Note = ""
