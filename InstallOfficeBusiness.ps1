@@ -65,4 +65,51 @@ if (Test-Path $c2rKey) {
             Write-Host "Use -Force to reinstall. Exiting." -ForegroundColor Yellow
             exit 0
         }
-        Write-Host "-Force specified
+        Write-Host "-Force specified. Proceeding with reinstall." -ForegroundColor Yellow
+    }
+}
+
+# ---------- 4. Download the Office Deployment Tool ----------
+$odtExe   = Join-Path $WorkDir "ODTSetup.exe"
+$setupExe = Join-Path $WorkDir "setup.exe"
+
+Write-Host "Downloading Office Deployment Tool..." -ForegroundColor Cyan
+try {
+    Invoke-WebRequest -Uri $OdtUrl -OutFile $odtExe -UseBasicParsing -ErrorAction Stop
+} catch {
+    Write-Host "ERROR: Failed to download ODT: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+# ---------- 5. Extract setup.exe from ODT ----------
+Write-Host "Extracting setup.exe from ODT..." -ForegroundColor Cyan
+Start-Process -FilePath $odtExe -ArgumentList "/quiet /extract:`"$WorkDir`"" -Wait
+if (-not (Test-Path $setupExe)) {
+    Write-Host "ERROR: setup.exe not found after ODT extraction." -ForegroundColor Red
+    exit 1
+}
+
+# ---------- 6. Download configuration XML from GitHub release ----------
+$localConfig = Join-Path $WorkDir "Office365-Business.xml"
+Write-Host "Downloading configuration XML from GitHub release ($Version)..." -ForegroundColor Cyan
+try {
+    Invoke-WebRequest -Uri $ConfigUrl -OutFile $localConfig -UseBasicParsing -ErrorAction Stop
+} catch {
+    Write-Host "ERROR: Failed to download config XML: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+# ---------- 7. Run the installation ----------
+Write-Host "Starting Office installation. This can take 10-30 minutes depending on bandwidth..." -ForegroundColor Green
+$proc = Start-Process -FilePath $setupExe -ArgumentList "/configure `"$localConfig`"" -Wait -PassThru
+
+if ($proc.ExitCode -eq 0) {
+    Write-Host "Office installation completed successfully." -ForegroundColor Green
+} else {
+    Write-Host "Office installation returned exit code $($proc.ExitCode). Check %TEMP% logs." -ForegroundColor Red
+    exit $proc.ExitCode
+}
+
+# ---------- 8. Cleanup ----------
+Remove-Item -Path $odtExe -Force -ErrorAction SilentlyContinue
+Write-Host "Done." -ForegroundColor Cyan              
