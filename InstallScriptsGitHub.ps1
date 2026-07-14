@@ -56,6 +56,11 @@ $scripts = @(
         Note = ""
     },
     @{
+        Name = "Install Office 365 Business"
+        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallOfficeBusiness.ps1"
+        Note = ""
+    },
+    @{
         Name = "Install HEIC Extension"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallHEICExtension.ps1"
         Note = ""
