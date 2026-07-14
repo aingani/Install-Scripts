@@ -67,10 +67,33 @@
         }
     }
 
-    # ---------- 4. Download the Office Deployment Tool ----------
+        # ---------- 4. Discover + download the latest Office Deployment Tool ----------
     $odtExe   = Join-Path $WorkDir "ODTSetup.exe"
     $setupExe = Join-Path $WorkDir "setup.exe"
 
+    Write-Host "Resolving latest ODT download URL from Microsoft..." -ForegroundColor Cyan
+    $OdtUrl = $null
+    try {
+        # Microsoft's confirmation page returns the direct download link in its HTML
+        $confirmPage = "https://www.microsoft.com/en-us/download/details.aspx?id=49117"
+        $html = (Invoke-WebRequest -Uri $confirmPage -UseBasicParsing -ErrorAction Stop).Content
+
+        # Match any download.microsoft.com URL ending in officedeploymenttool_*.exe
+        $match = :Match($html, 'https://download\.microsoft\.com/download/[^"'']+officedeploymenttool_[\d\-]+\.exe')
+        if ($match.Success) {
+            $OdtUrl = $match.Value
+        }
+    } catch {
+        Write-Host "WARN: Could not query Microsoft download page: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+
+    # Fallback to a known-good URL if auto-discovery failed
+    if (-not $OdtUrl) {
+        Write-Host "Falling back to hardcoded ODT URL." -ForegroundColor Yellow
+        $OdtUrl = "https://download.microsoft.com/download/6c1eeb25-cf8b-41d9-8d0d-cc1dbc032140/officedeploymenttool_20026-20112.exe"
+    }
+
+    Write-Host "ODT URL: $OdtUrl" -ForegroundColor Cyan
     Write-Host "Downloading Office Deployment Tool..." -ForegroundColor Cyan
     try {
         Invoke-WebRequest -Uri $OdtUrl -OutFile $odtExe -UseBasicParsing -ErrorAction Stop
