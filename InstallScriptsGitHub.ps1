@@ -63,7 +63,7 @@ $scripts = @(
     @{
         Name = "Run Windows 11 Performance Tweaks"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11Performance.ps1"
-        Note = "Disables telemetry,tasks,consumerfeatures,Widgets,LLMNR,aSMBv1,Enables Storage Sense"
+        Note = "Disables telemetry,tasks,consumerfeatures,Widgets,LLMNR,SMBv1,Storage Sense"
     },
     @{
         Name = "Uninstall Dell SupportAssist Apps"
