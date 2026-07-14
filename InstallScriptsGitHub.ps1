@@ -110,7 +110,7 @@ while ($true) {
     $choice = Read-Host "`nEnter the number of the script to run (or Q to quit)"
 
     # --- handle empty input ---
-    if ([string]::IsNullOrWhiteSpace($choice)) { continue }
+    if (:IsNullOrWhiteSpace($choice)) { continue }
 
     # --- handle quit ---
     if ($choice.Trim().ToUpper() -eq 'Q') {
@@ -158,8 +158,18 @@ while ($true) {
     } catch {
         Write-Host "ERROR: '$selectedName' threw an exception:`n       $($_.Exception.Message)" -ForegroundColor Red
     }
-    Write-Host
-    Write-Host
-    Write-Host "`nDone running '$selectedName'. Press any key to return to the menu..." -ForegroundColor Yellow
-    [void][System.Console]::ReadKey($true)
+
+    # --- Return-to-menu prompt (async-output safe) --------------
+    # Let Add-AppxPackage / other async progress writes finish
+    Start-Sleep -Milliseconds 1000
+
+    # Drain any keystrokes that were captured during progress output
+    while ([System.Console]::KeyAvailable) {
+        [void][System.Console]::ReadKey($true)
+    }
+
+    Write-Host ""
+    Write-Host ""
+    Write-Host "Done running '$selectedName'." -ForegroundColor Yellow
+    Read-Host "Press ENTER to return to the menu"
 }
