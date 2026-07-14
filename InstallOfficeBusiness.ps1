@@ -1,36 +1,36 @@
 <#
 .SYNOPSIS
-    Installs Microsoft 365 Apps for Business using the Office Deployment Tool (ODT)
-    with Office365-Business.xml pulled from the Install-Scripts GitHub release.
+    Installs Microsoft 365 Apps for Business using ODT + Office365-Business.xml
+    from the Install-Scripts GitHub release.
 
 .DESCRIPTION
-    Safe to run via Invoke-Expression (IEX) — uses a script block with `return`
-    instead of `exit`, so failures never close the calling console.
+    Safe for both file execution and Invoke-Expression (IEX). No top-level
+    param() block, no `exit` statements — failures return cleanly.
 
-.PARAMETER Version
-    Release tag to pull the config from. Defaults to "latest".
-
-.PARAMETER Force
-    Reinstalls Office even if a Click-to-Run install is already present.
-
-.EXAMPLE
-    .\InstallOfficeBusiness.ps1
+.NOTES
+    To override defaults BEFORE running via IEX, set global variables:
+        $global:OfficeVersion = 'v1.0.0'   # optional, defaults to 'latest'
+        $global:OfficeForce   = $true      # optional, defaults to $false
 
 .EXAMPLE
+    # Local file
+    & .\InstallOfficeBusiness.ps1
+
+    # From GitHub, default (latest release, no force)
+    iex (irm "https://raw.githubusercontent.com/aingani/Install-Scripts/main/InstallOfficeBusiness.ps1")
+
+    # From GitHub, force reinstall
+    $global:OfficeForce = $true
     iex (irm "https://raw.githubusercontent.com/aingani/Install-Scripts/main/InstallOfficeBusiness.ps1")
 #>
 
-[CmdletBinding()]
-param(
-    [string]$Version = "latest",
-    [switch]$Force
-)
-
 & {
-    param($Version, $Force)
+    # ---------- Resolve options (globals if provided, else defaults) ----------
+    $Version = if ($global:OfficeVersion) { $global:OfficeVersion } else { 'latest' }
+    $Force   = [bool]$global:OfficeForce
 
     # ---------- Fixed sources ----------
-    if ($Version -eq "latest") {
+    if ($Version -eq 'latest') {
         $ConfigUrl = "https://github.com/aingani/Install-Scripts/releases/latest/download/Office365-Business.xml"
     } else {
         $ConfigUrl = "https://github.com/aingani/Install-Scripts/releases/download/$Version/Office365-Business.xml"
@@ -48,8 +48,10 @@ param(
     # ---------- 2. Working directory ----------
     $WorkDir = Join-Path $env:TEMP "ODTInstall"
     if (-not (Test-Path $WorkDir)) { New-Item -Path $WorkDir -ItemType Directory -Force | Out-Null }
-    Write-Host "Working directory: $WorkDir" -ForegroundColor Cyan
-    Write-Host "Config source   : $ConfigUrl" -ForegroundColor Cyan
+    Write-Host "Working directory: $WorkDir"     -ForegroundColor Cyan
+    Write-Host "Config source   : $ConfigUrl"    -ForegroundColor Cyan
+    Write-Host "Version         : $Version"      -ForegroundColor Cyan
+    Write-Host "Force           : $Force"        -ForegroundColor Cyan
 
     # ---------- 3. Check for existing Office (Click-to-Run) ----------
     $c2rKey = "HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\Configuration"
@@ -58,10 +60,10 @@ param(
         if ($installedProducts) {
             Write-Host "Detected existing Click-to-Run Office install: $installedProducts" -ForegroundColor Yellow
             if (-not $Force) {
-                Write-Host "Use -Force to reinstall. Exiting." -ForegroundColor Yellow
+                Write-Host 'Set $global:OfficeForce = $true to reinstall. Exiting.' -ForegroundColor Yellow
                 return
             }
-            Write-Host "-Force specified. Proceeding with reinstall." -ForegroundColor Yellow
+            Write-Host "Force specified. Proceeding with reinstall." -ForegroundColor Yellow
         }
     }
 
@@ -108,6 +110,6 @@ param(
 
     # ---------- 8. Cleanup ----------
     Remove-Item -Path $odtExe -Force -ErrorAction SilentlyContinue
+    Remove-Variable -Name OfficeVersion, OfficeForce -Scope Global -ErrorAction SilentlyContinue
     Write-Host "Done." -ForegroundColor Cyan
-
-} -Version $Version -Force:$Force
+}
