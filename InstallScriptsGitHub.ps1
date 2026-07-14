@@ -49,14 +49,23 @@ $scripts = @(
         Name = "Install Adobe Acrobat (Unified)"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallAcrobatAdobeNew.ps1"
         Note = "New"
+    @{
+        Name = "Install WinGet Apps"
+        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallWingetApps.ps1"
+        Note = ""
     },
     @{
-        Name = "Remove Windows 11 Bloatware (Win11Unclutter)"
+        Name = "Run Remove Windows 11 Bloatware (Win11Unclutter)"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11unclutter.ps1"
         Note = ""
     },
     @{
-        Name = "Uninstall Dell SupportAssist"
+        Name = "Run Windows 11 Performance Tweaks"
+        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11Performance.ps1"
+        Note = "Disables telemetry,tasks,consumerfeatures,Widgets,LLMNR,aSMBv1,Enables Storage Sense"
+    },
+    @{
+        Name = "Uninstall Dell SupportAssist Apps"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/UninstallDellSupportAssist.ps1"
         Note = "Run at least TWICE to get all components removed"
     },
@@ -65,24 +74,14 @@ $scripts = @(
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InfoGathering.ps1"
         Note = ""
     },
-        @{
-        Name = "Run Win11Performance"
-        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/Win11Performance.ps1"
-        Note = "Disables telemetry,tasks,consumerfeatures,Widgets,LLMNR,aSMBv1,Enables Storage Sense"
-    },
     @{
         Name = "Configure Network Settings (disable NetBIOS & IPv6)"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/ConfigNetworkSettings.ps1"
         Note = "Sets NetBIOS & IPv6 to Disabled"
     },
     @{
-        Name = "Apply Recommended Power Settings"
+        Name = "Configure Recommended Power Settings"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/PowerSettings.ps1"
-        Note = ""
-    },
-    @{
-        Name = "Disable Windows Hello Features"
-        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/disablehello.ps1"
         Note = ""
     }
 )
