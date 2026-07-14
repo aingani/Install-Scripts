@@ -49,6 +49,7 @@ $scripts = @(
         Name = "Install Adobe Acrobat (Unified)"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallAcrobatAdobeNew.ps1"
         Note = "New"
+    },
     @{
         Name = "Install WinGet Apps"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallWingetApps.ps1"
