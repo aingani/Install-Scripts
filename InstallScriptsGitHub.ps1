@@ -56,11 +56,6 @@ $scripts = @(
         Note = ""
     },
     @{
-        Name = "Install Office 365 Business"
-        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallOfficeBusiness.ps1"
-        Note = ""
-    },
-    @{
         Name = "Install HEIC Extension"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallHEICExtension.ps1"
         Note = ""
@@ -115,7 +110,7 @@ while ($true) {
     $choice = Read-Host "`nEnter the number of the script to run (or Q to quit)"
 
     # --- handle empty input ---
-    if (:IsNullOrWhiteSpace($choice)) { continue }
+    if ([string]::IsNullOrWhiteSpace($choice)) { continue }
 
     # --- handle quit ---
     if ($choice.Trim().ToUpper() -eq 'Q') {
