@@ -1,15 +1,41 @@
 <# *************************************************
    Windows 11 - Performance & Cleanup Tweaks
 
-   Disables telemetry services, consumer feature ads,
-   widgets/news, LLMNR, SMBv1, and a set of idle-running
-   scheduled tasks. Enables Storage Sense and sets visual
-   effects to "best performance" while preserving font
-   smoothing. Power plan / hibernation are handled by
-   PowerSettings.ps1.
+   Disables consumer feature ads, widgets/news, LLMNR,
+   SMBv1, and a set of idle-running scheduled tasks.
+   Enables Storage Sense and sets visual effects to
+   "best performance" while preserving font smoothing.
+   Power plan / hibernation are handled by PowerSettings.ps1.
 
    Quantech Corp.
    Alfred Ingani and Claude
+   Ver 1.0.3
+    - REMOVED dmwappushservice from $servicesToDisable.
+      Despite the "WAP Push" display name this is the
+      OMA-DM client transport. Disabling it breaks Intune
+      MDM sync: scheduled tasks under \EnterpriseMgmt\
+      still fire but fail 0x800706D9 (EPT_S_NOT_REGISTERED)
+      because no RPC endpoint is listening. Device stops
+      reporting; per-policy compliance freezes at its last
+      known state and "Is active" flips Not compliant once
+      the compliance status validity period lapses.
+    - REMOVED DiagTrack from $servicesToDisable. It is the
+      transport for the Defender for Endpoint sensor,
+      Windows Update for Business reporting, Endpoint
+      analytics, and device inventory upload.
+    - Added Section 1a: $servicesToRestore. Dropping the two
+      services from the disable list is not sufficient - the
+      script takes no action on services it no longer names,
+      so machines already broken by <=1.0.2 need an explicit
+      restore. Only touches services currently Disabled.
+    - Restore section triggers an immediate OMA-DM session so
+      the device reports in without waiting for the 8-hour
+      Schedule #3 cycle.
+    - Version bumped to 1.0.3 so machines sitting at 1.0.2
+      re-run and pick up the restore. DEPLOY VIA CONNECTWISE,
+      NOT INTUNE - affected endpoints have no working DM
+      channel, so an Intune Platform Script or Remediation
+      cannot reach them.
    Ver 1.0.2
     - Added #Requires -RunAsAdministrator admin guard
     - Added Set-RegistryKeyOwner helper (takes ownership of
@@ -27,26 +53,35 @@
     - Removed hibernation (moved to PowerSettings.ps1)
     - Removed orphan powercfg /SetActive (now in PowerSettings)
     - Header description and Section 5 label cleaned up
-   06/17/2026
+   09/15/2026
    ************************************************* #>
 
 #Requires -RunAsAdministrator
 
 $QCKey = "HKLM:\Software\QuantechCorp\Win11Perf"
 $ver = "Version"
-$currentVersion = "1.0.2"
+$currentVersion = "1.0.3"
 
 # -----------------------------------------------------------------
 # Configuration
 # -----------------------------------------------------------------
 
-# Services to disable. WSearch is included - remove from list if
-# users rely heavily on Start menu / Explorer search.
+# Services to disable.
+#
+# DO NOT add dmwappushservice or DiagTrack here - see header.
+# WSearch is intentionally absent; add only if users do not rely
+# on Start menu / Explorer search.
 $servicesToDisable = @(
-    "DiagTrack",            # Connected User Experiences and Telemetry
-    "dmwappushservice",     # WAP Push Message Routing
     "MapsBroker",           # Downloaded Maps Manager
     "RetailDemo"            # Retail Demo Service
+)
+
+# Services disabled by earlier versions of this script that must be
+# put back. Only acted on when currently Disabled, so this is a
+# no-op on machines that never ran <=1.0.2.
+$servicesToRestore = @(
+    @{ Name = "dmwappushservice"; StartupType = "Automatic" },  # OMA-DM transport (Intune sync)
+    @{ Name = "DiagTrack";        StartupType = "Automatic" }   # MDE sensor / WUfB reporting / Endpoint analytics
 )
 
 # Scheduled tasks to disable (telemetry / CEIP / compatibility appraiser)
@@ -184,10 +219,58 @@ function Invoke-PerformanceTweaks {
     Write-Host
 
     # ------------------------------------------------------------
-    # 1. Disable telemetry / unneeded services
+    # 1a. Restore services wrongly disabled by <=1.0.2
+    #
+    # Runs before the disable loop so a machine can never end a
+    # run in the broken state. Only acts on services currently
+    # Disabled - untouched machines fall straight through.
     # ------------------------------------------------------------
     Write-Host "*********************************" -ForegroundColor Red
-    Write-Host "Disabling Telemetry/Unused Services" -ForegroundColor Red
+    Write-Host "Restoring MDM/Telemetry Services" -ForegroundColor Red
+    Write-Host "*********************************" -ForegroundColor Red
+
+    $restored = 0
+    foreach ($s in $servicesToRestore) {
+        $svc = Get-Service -Name $s.Name -ErrorAction SilentlyContinue
+        if (-not $svc) {
+            Write-Host "  $($s.Name) not present." -ForegroundColor DarkGray
+            continue
+        }
+        if ($svc.StartType -eq 'Disabled') {
+            try {
+                Set-Service -Name $s.Name -StartupType $s.StartupType -ErrorAction Stop
+                Start-Service -Name $s.Name -ErrorAction SilentlyContinue
+                $now = Get-Service -Name $s.Name
+                Write-Host "  Restored: $($s.Name) -> $($now.StartType) / $($now.Status)" -ForegroundColor Yellow
+                $restored++
+            } catch {
+                Write-Host "  Could not restore $($s.Name) - $($_.Exception.Message)" -ForegroundColor Red
+            }
+        } else {
+            Write-Host "  $($s.Name) already $($svc.StartType) / $($svc.Status)." -ForegroundColor DarkGray
+        }
+    }
+
+    # If we just repaired the DM transport, kick an OMA-DM session
+    # now rather than waiting up to 8 hours for Schedule #3.
+    if ($restored -gt 0) {
+        $syncTasks = Get-ScheduledTask -TaskPath "\Microsoft\Windows\EnterpriseMgmt\*" `
+                        -TaskName "Schedule #3 created by enrollment client" -ErrorAction SilentlyContinue
+        if ($syncTasks) {
+            $syncTasks | Start-ScheduledTask
+            Write-Host "  Triggered OMA-DM sync ($($syncTasks.Count) enrollment folder(s))." -ForegroundColor Yellow
+            Write-Host "  Verify: LastTaskResult 0x00000000 and LastSyncDateTime in Intune." -ForegroundColor DarkGray
+        } else {
+            Write-Host "  No EnterpriseMgmt sync task found - device may need re-enrollment." -ForegroundColor Red
+        }
+    }
+    Write-Host
+
+    # ------------------------------------------------------------
+    # 1. Disable unneeded services
+    # ------------------------------------------------------------
+    Write-Host "*********************************" -ForegroundColor Red
+    Write-Host "Disabling Unused Services" -ForegroundColor Red
     Write-Host "*********************************" -ForegroundColor Red
 
     foreach ($svc in $servicesToDisable) {
@@ -344,6 +427,12 @@ function Invoke-PerformanceTweaks {
     # are sometimes owned by TrustedInstaller and Disable-ScheduledTask
     # fails with access denied. If you see that, fall back to:
     #   schtasks.exe /Change /TN "<full path>" /DISABLE
+    #
+    # NOTE: Microsoft Compatibility Appraiser and ProgramDataUpdater
+    # feed Windows Update feature-update compatibility assessment.
+    # Disabling them means WUfB targets these machines without
+    # compatibility data. Drop them from $tasksToDisable if you rely
+    # on WUfB for feature updates.
     # ------------------------------------------------------------
     Write-Host "*********************************" -ForegroundColor Red
     Write-Host "Disabling Telemetry Scheduled Tasks" -ForegroundColor Red
