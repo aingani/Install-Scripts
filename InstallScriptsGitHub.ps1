@@ -1,4 +1,4 @@
-# Run-InstallScriptsMenu.ps1
+# InstallScriptsGitHub.ps1
 # ---------------------------------------------------------------
 # Description : Presents an interactive console menu to run
 #               PowerShell scripts hosted in the GitHub repository
@@ -12,7 +12,7 @@
 #               system settings.
 #
 # Customising : To add or remove menu items, edit the $scripts
-#               array below. Each entry is a hashtable with two
+#               array below. Each entry is a hashtable with three
 #               keys:
 #                 Name  – the label shown in the menu
 #                 Url   – the raw GitHub URL of the .ps1 file
