@@ -110,6 +110,11 @@ $EmbeddedJson = @'
 # ---------------------------------------------------------------------------
 # 1. Module bootstrap
 # ---------------------------------------------------------------------------
+if (-not (Get-PackageProvider -ListAvailable -Name NuGet -ErrorAction SilentlyContinue |
+          Where-Object { $_.Version -ge [version]'2.8.5.201' })) {
+    Write-Host "Installing NuGet package provider..." -ForegroundColor Cyan
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null
+}
 if (-not (Get-Module -ListAvailable -Name Microsoft.WinGet.Client)) {
     Write-Host "Installing Microsoft.WinGet.Client (CurrentUser scope)..." -ForegroundColor Cyan
     Install-Module Microsoft.WinGet.Client -Scope CurrentUser -Force -Repository PSGallery
