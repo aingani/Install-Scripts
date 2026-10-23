@@ -105,9 +105,10 @@ while ($true) {
         }
         Write-Host $label
     }
+    Write-Host "R. Reload menu from GitHub"
     Write-Host "Q. Quit"
 
-    $choice = Read-Host "`nEnter the number of the script to run (or Q to quit)"
+    $choice = Read-Host "`nEnter the number of the script to run (R to reload, Q to quit)"
 
     # --- handle empty input ---
     if ([string]::IsNullOrWhiteSpace($choice)) { continue }
@@ -118,15 +119,37 @@ while ($true) {
         break
     }
 
+    # --- handle reload ---
+    # Re-download this menu and run the new copy in place of this one. The GitHub API
+    # is tried first because raw.githubusercontent.com caches files for ~5 minutes.
+    if ($choice.Trim().ToUpper() -eq 'R') {
+        Write-Host "Reloading menu from GitHub..." -ForegroundColor DarkGray
+        $menuContent = $null
+        try {
+            $menuContent = (Invoke-WebRequest -UseBasicParsing -Uri "https://api.github.com/repos/aingani/Install-Scripts/contents/InstallScriptsGitHub.ps1" `
+                -Headers @{ Accept = 'application/vnd.github.raw' }).Content
+        } catch {
+            try {
+                $menuContent = (Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallScriptsGitHub.ps1").Content
+            } catch {
+                Write-Host "ERROR: Could not reload the menu from GitHub.`n       $($_)" -ForegroundColor Red
+                continue
+            }
+        }
+        if ($menuContent -is [byte[]]) { $menuContent = [Text.Encoding]::UTF8.GetString($menuContent) }
+        Invoke-Expression $menuContent
+        break
+    }
+
     # --- validate numeric input ---
     if (-not ($choice -match '^[0-9]+$')) {
-        Write-Host "Invalid selection. Please enter a number or Q." -ForegroundColor Red
+        Write-Host "Invalid selection. Please enter a number, R or Q." -ForegroundColor Red
         continue
     }
 
     $index = [int]$choice - 1
     if ($index -lt 0 -or $index -ge $scripts.Count) {
-        Write-Host "Selection out of range. Choose 1-$($scripts.Count) or Q." -ForegroundColor Red
+        Write-Host "Selection out of range. Choose 1-$($scripts.Count), R or Q." -ForegroundColor Red
         continue
     }
 
