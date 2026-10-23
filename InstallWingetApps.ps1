@@ -15,7 +15,7 @@
     To update the app list, edit the $EmbeddedJson here-string (same schema as
     'winget export'). Or pass -JsonPath to load an external export file instead.
 .VERSION
-    1.0.2
+    1.0.3
 
 .PARAMETER JsonPath
     Optional. Path to an external winget export JSON. Overrides the embedded list.
@@ -120,9 +120,16 @@ if (-not (Get-Module -ListAvailable -Name Microsoft.WinGet.Client)) {
     Install-Module Microsoft.WinGet.Client -Scope CurrentUser -Force -Repository PSGallery
 }
 Import-Module Microsoft.WinGet.Client
-try { $null = Get-WinGetVersion } catch {
-    Write-Host "Repairing winget package manager bootstrap..." -ForegroundColor Yellow
-    Repair-WinGetPackageManager -ErrorAction SilentlyContinue
+# Get-WinGetVersion only shells out to winget.exe; Get-WinGetSource exercises the COM
+# server that Get/Install/Update-WinGetPackage need (0x800706BA = COM server unavailable).
+try { $null = Get-WinGetSource } catch {
+    Write-Host "WinGet COM server unavailable ($($_.Exception.Message)). Repairing App Installer..." -ForegroundColor Yellow
+    try { Repair-WinGetPackageManager -Latest -Force } catch { Write-Host "Repair failed: $($_.Exception.Message)" -ForegroundColor Red }
+    try { $null = Get-WinGetSource } catch {
+        throw ("WinGet COM server still unavailable: $($_.Exception.Message)`n" +
+               "Run from the logged-on user's own session (not 'Run as different user', SYSTEM or a remote session), " +
+               "update App Installer from the Microsoft Store, or open a new PowerShell window and retry.")
+    }
 }
 
 # ---------------------------------------------------------------------------
