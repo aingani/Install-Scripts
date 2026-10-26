@@ -4,6 +4,9 @@
 
    Quantech Corp.
    Alfred Ingani
+   Ver 1.8.0
+    - Stopped removing new Outlook
+      (Microsoft.OutlookForWindows); left commented out
    Ver 1.7.1
     - Added curated corporate-image debloat additions:
       Bing apps (News/Search/Finance/Sports), Mail&Calendar,
@@ -33,14 +36,14 @@
    Ver 1.6.0 - Added onscreen Outputs
    Ver 1.5.2 - Added additional app
    Ver 1.5.1 - Added listed apps, version check
-   06/17/2026
+   10/26/2026
    ************************************************* #>
 
 #Requires -RunAsAdministrator
 
 $QCKey = "HKLM:\Software\QuantechCorp\Win11Clutter"
 $verPropName = "Version"
-$currentVersion = "1.7.1"
+$currentVersion = "1.8.0"
 
 # -----------------------------------------------------------------
 # Configuration
@@ -51,7 +54,9 @@ $currentVersion = "1.7.1"
 # above so existing machines re-process the list.
 $appPackages = @(
     "Microsoft.GamingOverlay",
-    "Microsoft.OutlookForWindows",
+    # Microsoft.OutlookForWindows - new Outlook, intentionally left
+    # installed. Uncomment to remove.
+    # "Microsoft.OutlookForWindows",
     "MicrosoftTeams",
     "Microsoft.MicrosoftOfficeHub",
     "Microsoft.M365Companions",
