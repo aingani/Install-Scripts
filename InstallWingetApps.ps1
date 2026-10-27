@@ -15,7 +15,7 @@
     To update the app list, edit the $EmbeddedJson here-string (same schema as
     'winget export'). Or pass -JsonPath to load an external export file instead.
 .VERSION
-    1.0.3
+    1.0.4
 
 .PARAMETER JsonPath
     Optional. Path to an external winget export JSON. Overrides the embedded list.
@@ -72,6 +72,7 @@ $EmbeddedJson = @'
                 { "PackageIdentifier" : "SonicWall.NetExtender" },
                 { "PackageIdentifier" : "Microsoft.AzureCLI" },
                 { "PackageIdentifier" : "GitHub.cli" },
+                { "PackageIdentifier" : "Anthropic.ClaudeCode" },
                 { "PackageIdentifier" : "Oracle.VirtualBox" },
                 { "PackageIdentifier" : "Microsoft.VCRedist.2008.x64" },
                 { "PackageIdentifier" : "Microsoft.Azure.StorageExplorer" },
