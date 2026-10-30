@@ -13,6 +13,13 @@
       - Consumer/retail SKUs present    -> ODT removal pass, then install.
       - Platform (x86/x64) mismatch     -> removal pass is mandatory.
 
+.VERSION
+    1.0.0
+
+.VERSION HISTORY
+    1.0.0 - 10/30/2026 - Initial versioned release (replaces old InstallOfficeBusiness.ps1;
+                         formerly InstallOfficeBusinessNew.ps1)
+
 .NOTES
     Globals honored (set BEFORE running via IEX):
         $global:OfficeVersion   = 'v1.0.0'  # release tag, default 'latest'
@@ -28,6 +35,9 @@
 #>
 
 & {
+    $ScriptVersion = '1.0.0'
+    Write-Host "InstallOfficeBusiness v$ScriptVersion" -ForegroundColor Cyan
+
     # ---------- Resolve options ----------
     $Version   = if ($global:OfficeVersion) { $global:OfficeVersion } else { 'latest' }
     $Force     = [bool]$global:OfficeForce
