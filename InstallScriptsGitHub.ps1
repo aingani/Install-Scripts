@@ -41,6 +41,11 @@ if (-not ([Security.Principal.WindowsPrincipal] `
 # ================================================================
 $scripts = @(
     @{
+        Name = "Install Microsoft 365 Apps for Business"
+        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InstallOfficeBusiness.ps1"
+        Note = ""
+    },
+    @{
         Name = "Install Google Chrome"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/install-chrome.ps1"
         Note = ""
