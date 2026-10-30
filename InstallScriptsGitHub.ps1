@@ -18,7 +18,13 @@
 #                 Url   – the raw GitHub URL of the .ps1 file
 #                 Note  – (optional) extra info shown beside the
 #                         menu item
+#
+# Version     : 1.0.0
+# History     : 1.0.0 - 10/30/2026 - Initial versioned release; Microsoft
+#                                    365 Apps for Business added as item 1
 # ---------------------------------------------------------------
+
+$ScriptVersion = '1.0.0'
 
 # --- Ensure TLS 1.2 for secure GitHub connections ---------------
 # Older Windows PowerShell versions default to TLS 1.0/1.1, which
@@ -101,7 +107,7 @@ $scripts = @(
 # MAIN LOOP — display the menu, accept input, execute selection
 # ================================================================
 while ($true) {
-    Write-Host "`n***************************** Install-Scripts Menu ********************************" -ForegroundColor Blue
+    Write-Host "`n************************** Install-Scripts Menu v$ScriptVersion ***************************" -ForegroundColor Blue
 
     for ($i = 0; $i -lt $scripts.Count; $i++) {
         $label = "{0}. {1}" -f ($i + 1), $scripts[$i].Name
