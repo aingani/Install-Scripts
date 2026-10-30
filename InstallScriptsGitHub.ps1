@@ -19,12 +19,13 @@
 #                 Note  – (optional) extra info shown beside the
 #                         menu item
 #
-# Version     : 1.0.0
-# History     : 1.0.0 - 10/30/2026 - Initial versioned release; Microsoft
+# Version     : 1.1.0
+# History     : 1.1.0 - 10/30/2026 - Removed System Info Gathering menu item
+#               1.0.0 - 10/30/2026 - Initial versioned release; Microsoft
 #                                    365 Apps for Business added as item 1
 # ---------------------------------------------------------------
 
-$ScriptVersion = '1.0.0'
+$ScriptVersion = '1.1.0'
 
 # --- Ensure TLS 1.2 for secure GitHub connections ---------------
 # Older Windows PowerShell versions default to TLS 1.0/1.1, which
@@ -85,11 +86,6 @@ $scripts = @(
         Name = "Uninstall Dell SupportAssist Apps"
         Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/UninstallDellSupportAssist.ps1"
         Note = "Run at least TWICE to get all components removed"
-    },
-    @{
-        Name = "Run System Info Gathering"
-        Url  = "https://raw.githubusercontent.com/aingani/install-scripts/main/InfoGathering.ps1"
-        Note = ""
     },
     @{
         Name = "Configure Network Settings (disable NetBIOS & IPv6)"
